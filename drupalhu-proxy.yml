@@ -1,0 +1,16 @@
+- hosts: all 
+  sudo: true
+  
+  tasks:
+    - name: Available packages
+      apt: name={{ item }} state=present update_cache=yes
+      with_items:
+        - varnish
+        - ansible
+        - git
+
+    - name: Varnish configuration is in place
+      template: src=templates/varnish/default.vcl dest=/etc/varnish/default.vcl
+
+    - name: Varnish is a startup service (and do a restart)
+      service: name=varnish state=restarted enabled=yes
